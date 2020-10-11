@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CurrentRateService } from '../current-rate.service';
 import { takeWhile } from "rxjs/operators";
-import {timer} from "rxjs";
+import { timer } from "rxjs";
 
 @Component({
   selector: 'app-current-rate',
@@ -11,33 +11,27 @@ import {timer} from "rxjs";
 export class CurrentRateComponent implements OnInit, OnDestroy {
 
   private alive = true;
-  public currencyFromXml;
-  public currencyFromJson;
+  public rateFromXml;
+  public rateFromJson;
 
   constructor(
     private currentRateService: CurrentRateService,
     ) { }
 
   async ngOnInit() {
-    await this.getCurRate();
+    await this.getCurrentRate();
   }
 
-  getCurRate() {
+  getCurrentRate() {
     timer(0, 10000)
       .pipe(takeWhile(() => this.alive))
-      .subscribe(() => {this.currentRateService.getCurrentRateFromXml()
-        .pipe(takeWhile(() => this.alive))
-        .subscribe(resp => {
-          this.currencyFromXml = resp;
-          console.log(this.currencyFromXml.ValCurs.Valute)
-        }, () => {
-          this.currentRateService.getCurrentRateFromJson()
-            .pipe(takeWhile(() => this.alive))
-            .subscribe(resp => {
-              this.currencyFromJson = resp;
-              console.log(this.currencyFromJson)
-            })
-        })
+      .subscribe(async () => {
+        await this.currentRateService.getCurrentRateFromXml()
+          .then(res => this.rateFromXml = res)
+          .catch(async () => {
+            await this.currentRateService.getCurrentRateFromJson()
+              .then(res => this.rateFromJson = res)
+          })
       })
   }
 
