@@ -1,0 +1,32 @@
+.container {
+  font-family: 'Roboto','Open Sans', sans-serif;
+  width: 350px;
+  height: 150px;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #dfe1e5;
+  box-shadow: none;
+  padding: 10px;
+  &__rate-xml--currency {
+    .eur {
+      display: flex;
+      font-size: 16px;
+      color: #70757a;
+      margin-bottom: 10px;
+      &__two {
+        margin: 0 5px 0 5px;
+      }
+    }
+    .rub {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+    .date {
+      color: #70757a;
+      font-size: 12px;
+    }
+  }
+  &:hover {
+    box-shadow: 0 0 1px rgba(7, 15, 1, 0.65);
+  }
+}
