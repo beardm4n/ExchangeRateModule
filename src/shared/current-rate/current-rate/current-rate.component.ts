@@ -32,7 +32,7 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
       .subscribe(async () => {
         await this.currentRateService.getCurrentRateFromXml()
           .then(res => {
-            this.today = formatDate(new Date(), 'd MMM h:mm:ss a', 'en', );
+            this.today = formatDate(new Date(), 'd MMM h:mm:ss a', 'en');
             this.rateFromXml = res.ValCurs.Valute.filter(el => el.CharCode === 'EUR');
             const valueUpdate = this.rateFromXml[0].Value.replace(',', '.');
             this.rateFromXml[0].Value = (Math.ceil(parseFloat(valueUpdate) * 100) / 100).toString().replace('.', ',');
