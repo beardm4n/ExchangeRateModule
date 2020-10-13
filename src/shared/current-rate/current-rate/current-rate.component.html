@@ -1,5 +1,5 @@
 <div class="container">
-  <div *ngIf="rateFromXml">
+  <ng-container *ngIf="rateFromXml">
     <div *ngFor="let rate of rateFromXml" class="container__rate-xml--currency">
       <div class="eur">
         <div class="eur__one">{{rate.Nominal}}</div>
@@ -11,5 +11,19 @@
       </div>
       <div class="date">{{today}}</div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="rateFromJson">
+    <div class="container__rate-xml--currency">
+      <div class="eur">
+        <div class="eur__one">{{rateFromJson.Nominal}}</div>
+        <div class="eur__two">{{rateFromJson.Name}}</div>
+        <div class="eur__three">равно</div>
+      </div>
+      <div class="rub">
+        {{rateFromJson.Value}} Российский рубль
+      </div>
+      <div class="date">{{today}}</div>
+    </div>
+  </ng-container>
 </div>
