@@ -4,7 +4,7 @@ import { takeWhile } from "rxjs/operators";
 import { timer } from "rxjs";
 import { formatDate } from '@angular/common';
 
-import { RateXml } from "../models";
+import {RateJson, RateXml} from "../models";
 
 @Component({
   selector: 'app-current-rate',
@@ -15,7 +15,7 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
 
   private alive = true;
   public rateFromXml: RateXml[];
-  public rateFromJson;
+  public rateFromJson: RateJson;
   public today: string;
 
   constructor(
@@ -39,7 +39,21 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
           })
           .catch(async () => {
             await this.currentRateService.getCurrentRateFromJson()
-              .then(res => this.rateFromJson = res)
+              .then(res => {
+                this.today = formatDate(new Date(), 'd MMM h:mm:ss a', 'en');
+                // @ts-ignore
+                const resp = res.Valute.EUR;
+                const roundingNumberToString = (Math.ceil(resp.Value * 100) / 100).toString().replace('.', ',');
+                this.rateFromJson = {
+                  ID: resp.ID,
+                  NumCode: resp.NumCode,
+                  CharCode: resp.CharCode,
+                  Nominal: resp.Nominal,
+                  Name: resp.Name,
+                  Value: roundingNumberToString,
+                  Previous: resp.Previous
+                }
+              })
           })
       })
   }
