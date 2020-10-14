@@ -1,0 +1,7 @@
+{
+  "/daily": {
+    "target": "https://www.cbr-xml-daily.ru",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
