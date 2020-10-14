@@ -34,7 +34,7 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
             this.getDate();
             this.rateFromXml = res.ValCurs.Valute.filter(el => el.CharCode === 'EUR');
             const valueUpdate = this.rateFromXml[0].Value.replace(',', '.');
-            this.rateFromXml[0].Value = (Math.ceil(parseFloat(valueUpdate) * 100) / 100).toString().replace('.', ',');
+            this.rateFromXml[0].Value = this.rounded((parseFloat(valueUpdate))).replace('.', ',');
           })
           .catch(async () => {
             await this.currentRateService.getCurrentRateFromJson()
@@ -42,14 +42,14 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
                 this.getDate();
                 // @ts-ignore
                 const resp = res.Valute.EUR;
-                const roundingNumberToString = (Math.ceil(resp.Value * 100) / 100).toString().replace('.', ',');
+                const roundedNumber = this.rounded(resp.Value).replace('.', ',');
                 this.rateFromJson = {
                   ID: resp.ID,
                   NumCode: resp.NumCode,
                   CharCode: resp.CharCode,
                   Nominal: resp.Nominal,
                   Name: resp.Name,
-                  Value: roundingNumberToString,
+                  Value: roundedNumber,
                   Previous: resp.Previous
                 }
                 this.checkRates();
@@ -76,6 +76,10 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
       month: 'short',
       day: 'numeric',
     })
+  }
+
+  rounded(n: number): string {
+    return n.toFixed(2);
   }
 
   ngOnDestroy(): void {
