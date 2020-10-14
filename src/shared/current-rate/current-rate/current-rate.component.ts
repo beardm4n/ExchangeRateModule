@@ -2,9 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CurrentRateService } from '../current-rate.service';
 import { takeWhile } from "rxjs/operators";
 import { timer } from "rxjs";
-import { formatDate } from '@angular/common';
 
-import {RateJson, RateXml} from "../models";
+import { RateJson, RateXml } from "../models";
 
 @Component({
   selector: 'app-current-rate',
@@ -20,7 +19,7 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
 
   constructor(
     private currentRateService: CurrentRateService,
-    ) { }
+  ) { }
 
   async ngOnInit() {
     await this.getCurrentRate();
@@ -32,7 +31,7 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
       .subscribe(async () => {
         await this.currentRateService.getCurrentRateFromXml()
           .then(res => {
-            this.today = formatDate(new Date(), 'd MMM h:mm:ss a', 'en');
+            this.getDate();
             this.rateFromXml = res.ValCurs.Valute.filter(el => el.CharCode === 'EUR');
             const valueUpdate = this.rateFromXml[0].Value.replace(',', '.');
             this.rateFromXml[0].Value = (Math.ceil(parseFloat(valueUpdate) * 100) / 100).toString().replace('.', ',');
@@ -40,7 +39,7 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
           .catch(async () => {
             await this.currentRateService.getCurrentRateFromJson()
               .then(res => {
-                this.today = formatDate(new Date(), 'd MMM h:mm:ss a', 'en');
+                this.getDate();
                 // @ts-ignore
                 const resp = res.Valute.EUR;
                 const roundingNumberToString = (Math.ceil(resp.Value * 100) / 100).toString().replace('.', ',');
@@ -53,9 +52,30 @@ export class CurrentRateComponent implements OnInit, OnDestroy {
                   Value: roundingNumberToString,
                   Previous: resp.Previous
                 }
+                this.checkRates();
               })
           })
       })
+  }
+
+  /**
+   * Method for check results: if both request have a data we take the first result
+   */
+  checkRates(): void {
+    if (this.rateFromXml && this.rateFromJson) {
+      this.rateFromJson = null;
+    }
+  }
+
+  getDate(): void {
+    this.today = new Date().toLocaleDateString('ru-RU', {
+      hour12: false,
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+      month: 'short',
+      day: 'numeric',
+    })
   }
 
   ngOnDestroy(): void {

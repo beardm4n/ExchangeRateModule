@@ -7,7 +7,8 @@
   border: 1px solid #dfe1e5;
   box-shadow: none;
   padding: 10px;
-  &__rate-xml--currency {
+  &__rate-xml--currency,
+  &__rate-json--currency {
     .eur {
       display: flex;
       font-size: 16px;
